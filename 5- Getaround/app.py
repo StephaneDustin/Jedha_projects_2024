@@ -6,7 +6,7 @@ import plotly.graph_objects as go
 from PIL import Image
 from plotly.subplots import make_subplots
 
-### Config
+###Config
 st.set_page_config(
     page_title="GetAround Project Analysis",
     layout="wide"
@@ -22,7 +22,7 @@ st.markdown("""
     And as a Getaround advisor, you need to fix this to improve CRM and benefits !
 """)
 
-@st.cache_data
+@st.cache_data # to keep in memory
 def load_data():
     data = pd.read_excel(DATA_URL, sheet_name='rentals_data')
     return data
@@ -45,7 +45,7 @@ with col2:
         pd.set_option('display.max_colwidth', None)
         st.write(metadata)
 
-# Graph showing the late checkouts proportions
+# Show late checkouts ratios
 st.header("Are drivers often late for checkout?")
 delay_perc = (data["delay_at_checkout_in_minutes"]>=0).value_counts(normalize=True)
 fig = go.Figure(data=[go.Pie(labels=delay_perc.rename(index={True:'Late !',False:'In advance or in time'}).index, values=delay_perc.values, textinfo='percent', hole=.5)])
