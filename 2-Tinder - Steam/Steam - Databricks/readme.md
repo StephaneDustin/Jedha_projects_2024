@@ -1,5 +1,5 @@
 # Steam Project
-describes and analyses logs on game platform Steam.
+describes and analyses logs on game platform Steam, using Databricks.
 
 ## myLib docs
 This is the link to the notebook:
