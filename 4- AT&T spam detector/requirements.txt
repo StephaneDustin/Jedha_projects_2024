@@ -1,0 +1,10 @@
+pandas
+numpy
+matplotlib
+seaborn
+spacy
+en-core-web-sm
+scikit-learn
+tensorflow
+transformers
+jupyter
