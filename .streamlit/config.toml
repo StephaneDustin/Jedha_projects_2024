@@ -1,0 +1,7 @@
+[theme]
+base = "dark"
+primaryColor = "#d33682"
+backgroundColor = "#121212"  # Fond très foncé, proche du noir
+secondaryBackgroundColor = "#262626"  # Fond secondaire un peu moins foncé
+textColor = "#ffffff"
+font = "sans serif"
