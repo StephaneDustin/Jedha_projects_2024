@@ -240,3 +240,7 @@ with st.form("threshold_testing"):
             st.metric("The number of cases solved is :",solved_list_mobile[threshold])
 
 
+import os
+
+port = int(os.environ.get("PORT", 8501))
+st.run(port=port)
