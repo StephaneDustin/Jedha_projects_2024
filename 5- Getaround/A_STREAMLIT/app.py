@@ -17,7 +17,7 @@ DATA_URL = ("https://jedha-deployment.s3.amazonaws.com/get_around_delay_analysis
 st.title("              *** GetAround Delay Analysis Web Dashboard ***")
 
 st.markdown("""
-    As a customer, when you're waiting for your rental car to come, you might meet rage road !
+    As a customer, when you're waiting sooooooo long for your rental car to come, you might meet rage road !
     Bad idea, don't begin driving nervous...let's analyse restitution delays with this Streamlit dashboard.
     And as a Getaround advisor, you need to fix this to improve CRM and benefits !
 """)
@@ -35,21 +35,21 @@ data_load_state.text("")
 
 col1, col2 = st.columns(2)
 with col1:
-    st.write("See the 30 first rows of the dataset")
-    st.write(data.head(30))
+    st.write("See the 20 first rows of the dataset")
+    st.write(data.head(20))
     
 with col2:
-    if st.checkbox('Show metadata'):
-        st.subheader("Meaning of each column")
+    if st.checkbox('View metadata'):
+        st.subheader("Column content")
         metadata = pd.read_excel(DATA_URL, sheet_name='Documentation')
         pd.set_option('display.max_colwidth', None)
         st.write(metadata)
 
 # Show late checkouts ratios
-st.header("Are drivers often late for checkout?")
+st.header("Problem: How long are you going to wait for your car ?")
 delay_perc = (data["delay_at_checkout_in_minutes"]>=0).value_counts(normalize=True)
 fig = go.Figure(data=[go.Pie(labels=delay_perc.rename(index={True:'Late !',False:'In advance or in time'}).index, values=delay_perc.values, textinfo='percent', hole=.5)])
-fig.update_traces(marker=dict(colors=['#FFC0CB','#800080']))
+fig.update_traces(marker=dict(colors=['#4169E1','#800080']))
 st.plotly_chart(fig)
 
 
@@ -57,7 +57,7 @@ st.header("Time intervals and delays")
 col1, col2 = st.columns(2)
 with col1:
     st.markdown("**Time intervals between anticipated check-outs and next-check-in**")
-    fig = px.histogram(data, x="time_delta_with_previous_rental_in_minutes",color_discrete_sequence=["#7DCEA0"])
+    fig = px.histogram(data, x="time_delta_with_previous_rental_in_minutes",color_discrete_sequence=["#4169E1"])
     fig.update_layout(bargap=0.01)
     st.plotly_chart(fig,height = 400, use_container_width=True)
 with col2:
@@ -67,11 +67,11 @@ with col2:
     upper_bound = data['delay_at_checkout_in_minutes'].mean() + 3*data['delay_at_checkout_in_minutes'].std()
 
     df = data[(data['delay_at_checkout_in_minutes'] > lower_bound) & (data['delay_at_checkout_in_minutes'] < upper_bound)]
-    fig = px.histogram(df, x="delay_at_checkout_in_minutes", color_discrete_sequence=["#7DCEA0"])
+    fig = px.histogram(df, x="delay_at_checkout_in_minutes", color_discrete_sequence=["#4169E1"])
     fig.update_layout(bargap=0.01)
     st.plotly_chart(fig, height = 400 , use_container_width=True)
 
-st.subheader("Some data insights")
+st.subheader("Data analysis")
 
 #Plotting 3 pies
 pie = make_subplots(
@@ -100,7 +100,7 @@ pie.add_trace(
     go.Pie(
         values=checkin_perc,
         labels=checkin_perc.index,
-        marker_colors=["#FFC0CB", "#800080"],
+        marker_colors=["#800080", "#4169E1"],
     ),
     row=1,
     col=2,
@@ -110,7 +110,7 @@ pie.add_trace(
     go.Pie(
         values=canceled,
         labels=canceled.index,
-        marker_colors=["#FFC0CB", "#800080"],
+        marker_colors=["#800080", "#4169E1"],
     ),
     row=1,
     col=3,
@@ -122,8 +122,8 @@ pie.update_layout(width=1200, showlegend=True)
 
 st.plotly_chart(pie)
 
-st.subheader("What do we learn here ?")
-st.markdown(""" * 80% of rentals are made via connect checkin type.  
+st.subheader("Conclusion")
+st.markdown(""" * 80% of rentals are made via mobile checkin type.  
 * 15% of the overall rentals end up with cancellation.  
 * As connect checkin type only represents 20% of the rentals, it means that 25% of the cancellations come from connect checkin type. 
 * => Connect checkin type impacts +++ the cancellations.""")
@@ -211,11 +211,11 @@ with col2:
     fig = go.Figure(data=[total_solved_cars, connect_solved_cars, mobile_solved_cars], layout=layout)
     st.plotly_chart(fig, width = 800, height = 600, use_container_width=True)
 
-st.subheader("Graph analysis")
-st.markdown("""* We see the curve of solved cases flatten out after **120-140 minutes**, even up to 180 minutes. * => a much higher threshold could solve many problem cases.
-* Notice that if we increase the treshold, it influences the number of cars available and so the benefits.  
-* Like everywhere, it's a matter of compromise between those two features : reality facts and benefits.   
-* Knowing this, :red[**140 minutes**] threshold seems to be a good compromise for business.""")
+st.subheader("Observations")
+st.markdown("""* We see the curve of solved cases flatten out after **120-140 minutes**, even up to 180 minutes => a much higher threshold could solve many problem cases !
+* ...Well..if we increase the treshold, it decreases the number of cars available and so the benefits...bad idea => find a compromise.
+* Btw, according to Richard Larson (known as MIT's "Dr Queue" !), companies should deploy an occupationnal strategy during waiting time, eg giving Live informations on delivery avancement.
+* Knowing this, :red[**140 minutes**] threshold with live informations seems to be a good compromise for business and customers.""")
 
 st.write("")
 st.header("Dynamic playground of threshold and scope effects")
@@ -240,7 +240,7 @@ with st.form("threshold_testing"):
             st.metric("The number of cases solved is :",solved_list_mobile[threshold])
 
 
-import os
+#import os
 
-port = int(os.environ.get("PORT", 8501))
-st.run(port=port)
+#port = int(os.environ.get("PORT", 8501))
+#st.run(port=port)
