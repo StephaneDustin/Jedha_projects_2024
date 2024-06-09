@@ -54,9 +54,9 @@ Don't forget to write 'postgresql' instead of 'postgres' in BACKEND_STORE_URI ge
 
 ```sh
 docker run -it \
--e AWS_ACCESS_KEY_ID="YOUR_AWS_ACCESS_KEY" \
--e AWS_SECRET_ACCESS_KEY="YOUR_AWS_SECRET_ACCESS_KEY" \
--e BACKEND_STORE_URI="your URI using postgresql" \
--e ARTIFACT_ROOT="YOUR_S3_BUCKET_URI" \
+-e AWS_ACCESS_KEY_ID="" \
+-e AWS_SECRET_ACCESS_KEY="" \
+-e BACKEND_STORE_URI="" \
+-e ARTIFACT_ROOT="" \
 mlflow-app python app.py
 ```
