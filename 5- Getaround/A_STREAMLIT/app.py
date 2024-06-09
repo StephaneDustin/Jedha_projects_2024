@@ -5,6 +5,11 @@ import plotly.express as px
 import plotly.graph_objects as go
 from PIL import Image
 from plotly.subplots import make_subplots
+import os
+
+
+print(f"Listening on port {os.environ['PORT']}") # check Streamlit listens the right Heroku attributed port
+
 
 ###Config
 st.set_page_config(
@@ -48,8 +53,16 @@ with col2:
 # Show late checkouts ratios
 st.header("Problem: How long are you going to wait for your car ?")
 delay_perc = (data["delay_at_checkout_in_minutes"]>=0).value_counts(normalize=True)
-fig = go.Figure(data=[go.Pie(labels=delay_perc.rename(index={True:'Late !',False:'In advance or in time'}).index, values=delay_perc.values, textinfo='percent', hole=.5)])
-fig.update_traces(marker=dict(colors=['#4169E1','#800080']))
+fig = go.Figure(
+    data=[
+        go.Bar(
+            x=delay_perc.rename(index={True:'Late !',False:'In advance or in time'}).index,
+            y=delay_perc.values,
+            marker=dict(color=['#4169E1','#800080']),
+        )
+    ],
+)
+fig.update_layout(title="Late Checkouts Ratios")
 st.plotly_chart(fig)
 
 
@@ -73,11 +86,11 @@ with col2:
 
 st.subheader("Data analysis")
 
-#Plotting 3 pies
-pie = make_subplots(
+#Plotting 3 barplots
+bars = make_subplots(
     rows=1,
     cols=3,
-    specs=[[{"type": "domain"}, {"type": "domain"},{"type": "domain"}]],
+    # specs=[[{"type": "domain"}, {"type": "domain"},{"type": "domain"}]],
     shared_yaxes=True,
     subplot_titles=["Rentals status", "Checkin type","Cancellation proportion by checkin type"],
 )
@@ -86,41 +99,39 @@ state_perc = data["state"].value_counts() / len(data) * 100
 checkin_perc = data["checkin_type"].value_counts() / len(data) * 100
 canceled = (data[data['state']=='canceled']['checkin_type'].value_counts() / len(data[data['state']=='canceled'])) * 100
 
-pie.add_trace(
-    go.Pie(
-        values=state_perc,
-        labels=state_perc.index,
-        marker_colors=["#800080","#E74C3C"],
+bars.add_trace(
+    go.Bar(
+        y=state_perc,
+        x=state_perc.index,
+        marker=dict(color=["#800080","#4169E1"]),
     ),
     row=1,
     col=1,
 )
 
-pie.add_trace(
-    go.Pie(
-        values=checkin_perc,
-        labels=checkin_perc.index,
-        marker_colors=["#800080", "#4169E1"],
+bars.add_trace(
+    go.Bar(
+        y=checkin_perc,
+        x=checkin_perc.index,
+        marker=dict(color=["#800080","#4169E1"]),
     ),
     row=1,
     col=2,
 )
 
-pie.add_trace(
-    go.Pie(
-        values=canceled,
-        labels=canceled.index,
-        marker_colors=["#800080", "#4169E1"],
+bars.add_trace(
+    go.Bar(
+        y=canceled,
+        x=canceled.index,
+        marker=dict(color=["#800080","#4169E1"]),
     ),
     row=1,
     col=3,
 )
 
-pie.update_traces(hole=0.4, textinfo="label+percent")
+bars.update_layout(width=1200, showlegend=False)
 
-pie.update_layout(width=1200, showlegend=True)
-
-st.plotly_chart(pie)
+st.plotly_chart(bars)
 
 st.subheader("Conclusion")
 st.markdown(""" * 80% of rentals are made via mobile checkin type.  
@@ -224,7 +235,7 @@ st.markdown("Play yourself with the app here: adjust the threshold to see the ef
 with st.form("threshold_testing"):
     threshold = st.slider("Choose threshold in minutes", 0,720,0)
     checkin_type = st.radio("Choose desired checkin type", ["All", "Connect", "Mobile"])
-    submit = st.form_submit_button("Check it out !")
+    submit = st.form_submit_button("Go !")
 
     if submit:
         # Focus only on the selected checkin type

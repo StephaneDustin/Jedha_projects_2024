@@ -1,1 +1,3 @@
 Procfile
+model/linear.pkl
+model/preprocessor.pkl
