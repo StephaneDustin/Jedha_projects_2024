@@ -4,10 +4,11 @@ pydantic
 typing 
 pandas 
 gunicorn 
-openpyxl 
-mlflow 
+openpyxl
 boto3 
 scikit-learn
 python-multipart
 fsspec
 s3fs
+joblib
+mlflow

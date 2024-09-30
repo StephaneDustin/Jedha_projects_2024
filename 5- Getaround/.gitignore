@@ -1,1 +1,42 @@
 Procfile
+C_API/models
+
+venv/
+env/
+ENV/
+.venv/
+
+# Fichiers compilés Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Fichiers de log
+*.log
+
+# Configurations IDE/editeur
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Fichiers temporaires ou systemes
+*.swp
+*.bak
+*.tmp
+*.orig
+*.DS_Store
+Thumbs.db
+
+# Heroku
+# Ignore le fichier Heroku pour éviter d'inclure des clés secrètes
+.heroku/
+
+# Fichiers et répertoires spécifiques à Python
+*.egg
+*.egg-info/
+dist/
+build/
+pip-log.txt
+pip-delete-this-directory.txt

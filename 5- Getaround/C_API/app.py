@@ -4,6 +4,9 @@ import pandas as pd
 from pydantic import BaseModel
 from typing import Union
 import joblib
+import mlflow
+from mlflow.tracking import MlflowClient
+
 
 # Move import statements to the top
 description = """Welcome to the Getaround API ! Let estimate your car daily rental price. \n
@@ -64,6 +67,9 @@ class CarFeatures(BaseModel):
     has_getaround_connect: bool
     has_speed_regulator: bool
     winter_tires: bool
+
+    class Config:
+        protected_namespaces = ()
 
 
 @app.get("/", tags=["Introduction Endpoint"], responses={200: {"description": "Welcome message"}})
@@ -128,25 +134,58 @@ async def get_unique_values(col: str) -> list:
         return {"error": str(e)}
 
 
+def get_last_experiment_model ():
+    mlflow.set_tracking_uri("https://mlflow-with-heroku-89756a40d909.herokuapp.com")
+
+
+    client = MlflowClient()
+
+    # Récupérer l'ID de l'expérience (par exemple si tu sais laquelle utiliser)
+    experiment_id = "34"  # Remplace par l'ID de ton expérience ou utilise client.list_experiments()
+
+    # Récupérer la dernière exécution (run) de l'expérience
+    runs = client.search_runs(experiment_id, order_by=["start_time DESC"], max_results=1)
+
+    if runs:
+        latest_run = runs[0]
+        run_id = latest_run.info.run_id
+
+        # Récupérer l'URI du modèle associé au dernier run
+        #model_uri = f"https://st-using-heroku.s3.eu-west-3.amazonaws.com/artifacts/{experiment_id}/{run_id}/artifacts/model/model.pkl"
+        model_uri = f"mlruns/{experiment_id}/{run_id}/artifacts/model"
+    
+    
+        local_model_path = mlflow.artifacts.download_artifacts(run_id=run_id, dst_path="models")
+        
+        return local_model_path
+    else:
+        print("Aucun modèle trouvé dans cette expérience.")
+
+
+
+
+
 @app.post("/predict", tags=["Machine Learning Prediction Endpoint"], responses={200: {"description": "Estimated rental price per day"}})
 async def predict(car_features: CarFeatures) -> dict:
+    model_path=get_last_experiment_model()
+
     """
     Returns the estimated rental price per day for a car.
     """
     df = pd.DataFrame(dict(car_features), index=[0])
     try:
-        model = joblib.load('model/linear.pkl')
-        preprocessor = joblib.load('model/preprocessor.pkl')
+        model = joblib.load(f"{model_path}/model/model.pkl")
+        # preprocessor = joblib.load('model/preprocessor.pkl')
     except Exception as e:
         return {"error": str(e)}
 
-    try:
-        X = preprocessor.transform(df)
-    except Exception as e:
-        return {"error": str(e)}
+    # try:
+    #     X = preprocessor.transform(df)
+    # except Exception as e:
+    #     return {"error": str(e)}
 
     try:
-        prediction = model.predict(X)
+        prediction = model.predict(df)
         return {"result": f"The estimated rental price per day for this vehicle is {round(prediction[0], 2)} $"}
     except Exception as e:
         return {"error": str(e)}
