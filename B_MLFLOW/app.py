@@ -13,7 +13,7 @@ if __name__ == "__main__":
     EXPERIMENT_NAME = "Jedha-fullstack-deployment"
 
     # Set your tracking uri
-    # mlflow.set_tracking_uri("localhost:5000")
+    mlflow.set_tracking_uri("https://mlflow-with-heroku-89756a40d909.herokuapp.com")
 
     # Set experiment's info
     mlflow.set_experiment(EXPERIMENT_NAME)
@@ -59,6 +59,7 @@ if __name__ == "__main__":
     model = Pipeline(
         steps=[("Preprocessing", preprocessor), ("Regressor", GradientBoostingRegressor())]
     )
+
 
     with mlflow.start_run(experiment_id=experiment.experiment_id):
         model.fit(X_train, y_train)

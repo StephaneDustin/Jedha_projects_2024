@@ -18,15 +18,19 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
 COPY requirements.txt /dependencies/requirements.txt
 RUN pip install -r /dependencies/requirements.txt
 COPY app.py /home/app/app.py
+COPY heroku.yml /home/app/heroku.yml
 
 # Set environment variables
-ENV AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-ENV AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-ENV BACKEND_STORE_URI=$BACKEND_STORE_URI
-ENV ARTIFACT_ROOT=$ARTIFACT_ROOT
+ENV AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+ENV AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+ENV BACKEND_STORE_URI=${BACKEND_STORE_URI}
+ENV ARTIFACT_ROOT=${ARTIFACT_ROOT}
 
 # Start MLflow server
-CMD mlflow server -p $PORT \
+CMD mlflow server -p ${PORT} \
     --host 0.0.0.0 \
-    --backend-store-uri $BACKEND_STORE_URI \
-    --default-artifact-root $ARTIFACT_ROOT
+    --backend-store-uri ${BACKEND_STORE_URI} \
+    --default-artifact-root ${ARTIFACT_ROOT}
+
+
+

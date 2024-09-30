@@ -1,0 +1,16 @@
+digest: fb9e203a
+name: dataset
+profile: '{"num_rows": 3874, "num_elements": 50362}'
+schema: '{"mlflow_colspec": [{"type": "string", "name": "model_key", "required": true},
+  {"type": "long", "name": "mileage", "required": true}, {"type": "long", "name":
+  "engine_power", "required": true}, {"type": "string", "name": "fuel", "required":
+  true}, {"type": "string", "name": "paint_color", "required": true}, {"type": "string",
+  "name": "car_type", "required": true}, {"type": "boolean", "name": "private_parking_available",
+  "required": true}, {"type": "boolean", "name": "has_gps", "required": true}, {"type":
+  "boolean", "name": "has_air_conditioning", "required": true}, {"type": "boolean",
+  "name": "automatic_car", "required": true}, {"type": "boolean", "name": "has_getaround_connect",
+  "required": true}, {"type": "boolean", "name": "has_speed_regulator", "required":
+  true}, {"type": "boolean", "name": "winter_tires", "required": true}]}'
+source: '{"tags": {"mlflow.user": "taver", "mlflow.source.name": "app.py", "mlflow.source.type":
+  "LOCAL", "mlflow.source.git.commit": "7c000260799ab834d59bff887b983d8fe9cb1419"}}'
+source_type: code
